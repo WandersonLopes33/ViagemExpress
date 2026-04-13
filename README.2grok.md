@@ -843,7 +843,7 @@ Para dúvidas ou problemas:
 
 \---
 
-**Desenvolvido com ❤️ para ViagemExpress**
+**Desenvolvido wandersonlopes33
 
 Versão: 2.0.0 | Última atualização: Fevereiro 2025 | PostgreSQL + Redis Edition
 
