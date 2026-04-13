@@ -179,70 +179,7 @@ Copie o `.env.example` e edite:
 cp .env.example .env
 ```
 
-Cole esta configuração no `.env`:
 
-```env
-# ==================================
-# SERVIDOR
-# ==================================
-SERVER_TYPE=http
-SERVER_PORT=8080
-SERVER_URL=http://localhost:
-CORS_ORIGIN=*
-CORS_METHODS=POST,GET,PUT,DELETE
-CORS_CREDENTIALS=true
-
-# ==================================
-# BANCO DE DADOS (POSTGRESQL)
-# ==================================
-DATABASE_ENABLED=true
-DATABASE_PROVIDER=postgresql
-DATABASE_CONNECTION_URI=postgresql://evolution_user:SuaSenhaEvolution@localhost:
-DATABASE_CONNECTION_CLIENT_NAME=evolution_api
-DATABASE_SAVE_DATA_INSTANCE=true
-DATABASE_SAVE_DATA_NEW_MESSAGE=true
-DATABASE_SAVE_MESSAGE_UPDATE=true
-DATABASE_SAVE_DATA_CONTACTS=true
-DATABASE_SAVE_DATA_CHATS=true
-DATABASE_SAVE_DATA_LABELS=true
-DATABASE_SAVE_DATA_HISTORIC=true
-
-# ==================================
-# AUTENTICAÇÃO
-# ==================================
-AUTHENTICATION_TYPE=apikey
-AUTHENTICATION_API_KEY=
-AUTHENTICATION_EXPOSE_IN_FETCH_INSTANCES=true
-
-# ==================================
-# CONFIGURAÇÕES DE SESSÃO
-# ==================================
-CONFIG_SESSION_PHONE_CLIENT=
-CONFIG_SESSION_PHONE_NAME=Chrome
-DEL_INSTANCE=false
-
-# ==================================
-# LOGS
-# ==================================
-LOG_LEVEL=ERROR,WARN,DEBUG,INFO,LOG,VERBOSE
-LOG_COLOR=true
-LOG_BAILEYS=error
-
-# ==================================
-# LIMPEZA AUTOMÁTICA
-# ==================================
-CLEAN_STORE_CLEANING_INTERVAL=7200
-CLEAN_STORE_MESSAGES=true
-CLEAN_STORE_MESSAGE_UP_TO_DAYS=30
-CLEAN_STORE_CONTACTS=true
-CLEAN_STORE_CHATS=true
-
-# ==================================
-# QRCODE
-# ==================================
-QRCODE_LIMIT=30
-QRCODE_COLOR=#198754
-```
 
 #### Criar Schema Prisma
 
