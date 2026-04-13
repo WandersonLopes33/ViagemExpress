@@ -33,25 +33,25 @@ Sistema profissional completo para atendimento automatizado via WhatsApp usando 
 psql -U postgres
 
 # Criar banco e usuário do backend
-CREATE DATABASE viagemexpress;
-CREATE USER viagemexpress_user WITH ENCRYPTED PASSWORD 'SuaSenhaSegura2025!';
-GRANT ALL PRIVILEGES ON DATABASE viagemexpress TO viagemexpress_user;
+CREATE DATABASE #####;
+CREATE USER ######## WITH ENCRYPTED PASSWORD '######';
+GRANT ALL PRIVILEGES ON DATABASE ##############;
 
 # PostgreSQL 15+ requer permissões adicionais
 \c viagemexpress
-GRANT ALL ON SCHEMA public TO viagemexpress_user;
-GRANT CREATE ON SCHEMA public TO viagemexpress_user;
-ALTER SCHEMA public OWNER TO viagemexpress_user;
+GRANT ALL ON SCHEMA public TO ###########
+GRANT CREATE ON SCHEMA public TO ######
+ALTER SCHEMA public OWNER TO #########
 
 # Criar banco do Evolution API
 CREATE DATABASE evolution;
-CREATE USER evolution_user WITH ENCRYPTED PASSWORD 'SuaSenhaEvolution2025!';
-GRANT ALL PRIVILEGES ON DATABASE evolution TO evolution_user;
+CREATE USER evolution_user WITH ENCRYPTED PASSWORD '';
+GRANT ALL PRIVILEGES ON DATABASE 
 
 \c evolution
-GRANT ALL ON SCHEMA public TO evolution_user;
-GRANT CREATE ON SCHEMA public TO evolution_user;
-ALTER SCHEMA public OWNER TO evolution_user;
+GRANT ALL ON SCHEMA public 
+GRANT CREATE ON SCHEMA public 
+ALTER SCHEMA public OWNER 
 
 \q
 ```
@@ -91,11 +91,11 @@ PORT=3000
 # ==================================
 # POSTGRESQL
 # ==================================
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=viagemexpress
-DB_USER=viagemexpress_user
-DB_PASSWORD=SuaSenhaSegura2025!
+DB_HOST=
+DB_PORT=
+DB_NAME=
+DB_USER=
+DB_PASSWORD=
 
 # ==================================
 # GROQ AI (LLAMA 3.3)
@@ -108,9 +108,9 @@ GROQ_TEMPERATURE=0.7
 # ==================================
 # EVOLUTION API (WhatsApp)
 # ==================================
-EVOLUTION_API_URL=http://localhost:8080
-EVOLUTION_API_KEY=ViagemExpress_SecretKey_2025_Production
-EVOLUTION_INSTANCE_NAME=viagemexpress
+EVOLUTION_API_URL=
+EVOLUTION_API_KEY=
+EVOLUTION_INSTANCE_NAME=
 
 # ==================================
 # REDIS (Opcional - para cache)
@@ -187,7 +187,7 @@ Cole esta configuração no `.env`:
 # ==================================
 SERVER_TYPE=http
 SERVER_PORT=8080
-SERVER_URL=http://localhost:8080
+SERVER_URL=http://localhost:
 CORS_ORIGIN=*
 CORS_METHODS=POST,GET,PUT,DELETE
 CORS_CREDENTIALS=true
@@ -197,7 +197,7 @@ CORS_CREDENTIALS=true
 # ==================================
 DATABASE_ENABLED=true
 DATABASE_PROVIDER=postgresql
-DATABASE_CONNECTION_URI=postgresql://evolution_user:SuaSenhaEvolution2025!@localhost:5432/evolution
+DATABASE_CONNECTION_URI=postgresql://evolution_user:SuaSenhaEvolution@localhost:
 DATABASE_CONNECTION_CLIENT_NAME=evolution_api
 DATABASE_SAVE_DATA_INSTANCE=true
 DATABASE_SAVE_DATA_NEW_MESSAGE=true
@@ -211,13 +211,13 @@ DATABASE_SAVE_DATA_HISTORIC=true
 # AUTENTICAÇÃO
 # ==================================
 AUTHENTICATION_TYPE=apikey
-AUTHENTICATION_API_KEY=ViagemExpress_SecretKey_2025_Production
+AUTHENTICATION_API_KEY=
 AUTHENTICATION_EXPOSE_IN_FETCH_INSTANCES=true
 
 # ==================================
 # CONFIGURAÇÕES DE SESSÃO
 # ==================================
-CONFIG_SESSION_PHONE_CLIENT=ViagemExpress
+CONFIG_SESSION_PHONE_CLIENT=
 CONFIG_SESSION_PHONE_NAME=Chrome
 DEL_INSTANCE=false
 
@@ -883,7 +883,7 @@ Para dúvidas:
 
 ---
 
-**Desenvolvido com ❤️ para ViagemExpress**
+**Desenvolvido wandersonlopes33
 
 **Versão**: 2.0.0  
 **Última atualização**: Fevereiro 2025  
