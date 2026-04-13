@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ViagemExpress - Sistema de Atendimento IA</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #075e54;
+            --primary-dark: #054d44;
+            --secondary: #25d366;
+            --accent: #667eea;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --success: #28a745;
+            --light-bg: #f8f9fa;
+            --border: #e0e0e0;
+            --text-dark: #2c3e50;
+            --text-muted: #6c757d;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 20px;
+            height: calc(100vh - 40px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .logo-text h1 {
+            font-size: 18px;
+            color: var(--text-dark);
+            font-weight: 700;
+        }
+
+        .logo-text p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .stats-grid {
+            display: grid;
+            gap: 12px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 16px;
+            border-radius: 12px;
+            border-left: 4px solid var(--accent);
+        }
+
+        .stat-card.success {
+            border-left-color: var(--success);
+        }
+
+        .stat-card.warning {
+            border-left-color: var(--warning);
+        }
+
+        .stat-card.danger {
+            border-left-color: var(--danger);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-top: 4px;
+        }
+
+        .stat-change {
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .stat-change.positive {
+            color: var(--success);
+        }
+
+        .stat-change.negative {
+            color: var(--danger);
+        }
+
+        .quick-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .action-btn {
+            padding: 12px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .action-btn.primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .action-btn.primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(7, 94, 84, 0.3);
+        }
+
+        .action-btn.secondary {
+            background: white;
+            color: var(--text-dark);
+            border: 2px solid var(--border);
+        }
+
+        .action-btn.secondary:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-rows: auto 1fr;
+            gap: 20px;
+        }
+
+        .top-bar {
+            background: white;
+            border-radius: 16px;
+            padding: 20px 28px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background: var(--light-bg);
+            padding: 10px 16px;
+            border-radius: 10px;
+            gap: 10px;
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .search-bar input {
+            border: none;
+            background: none;
+            outline: none;
+            font-size: 14px;
+            flex: 1;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent), #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .chat-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            overflow: hidden;
+        }
+
+        /* Chat List */
+        .chat-list {
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-list-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-list-header h3 {
+            font-size: 16px;
+            color: var(--text-dark);
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 8px;
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .filter-tab {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            background: none;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .filter-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .chats {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .chat-item {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            gap: 12px;
+        }
+
+        .chat-item:hover {
+            background: var(--light-bg);
+        }
+
+        .chat-item.active {
+            background: #e8f5e9;
+            border-left: 4px solid var(--success);
+        }
+
+        .chat-item-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .chat-item-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .chat-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .chat-item-name {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-dark);
+        }
+
+        .chat-item-time {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .chat-item-preview {
+            font-size: 13px;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .unread-badge {
+            background: var(--success);
+            color: white;
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        /* Chat Area */
+        .chat-area {
+            display: flex;
+            flex-direction: column;
+            background: #e5ddd5;
+        }
+
+        .chat-header {
+            background: white;
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-header-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .chat-header-avatar {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .chat-header-details h3 {
+            font-size: 15px;
+            color: var(--text-dark);
+        }
+
+        .chat-header-details p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .chat-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .icon-btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: var(--light-bg);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .icon-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .messages {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+            background-image: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.03) 10px,
+                rgba(255,255,255,0.03) 20px
+            );
+        }
+
+        .message {
+            margin-bottom: 16px;
+            display: flex;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.bot {
+            justify-content: flex-start;
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .message-content {
+            max-width: 65%;
+            padding: 12px 16px;
+            border-radius: 10px;
+            position: relative;
+            word-wrap: break-word;
+            line-height: 1.5;
+        }
+
+        .message.bot .message-content {
+            background: white;
+            border-radius: 0 10px 10px 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .message.user .message-content {
+            background: #dcf8c6;
+            border-radius: 10px 0 10px 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .message-time {
+            font-size: 11px;
+            color: #667;
+            margin-top: 6px;
+            text-align: right;
+        }
+
+        .typing-indicator {
+            display: none;
+            padding: 12px 16px;
+            background: white;
+            border-radius: 10px;
+            width: fit-content;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .typing-indicator.active {
+            display: block;
+        }
+
+        .typing-indicator span {
+            height: 8px;
+            width: 8px;
+            background: #999;
+            border-radius: 50%;
+            display: inline-block;
+            margin: 0 2px;
+            animation: bounce 1.4s infinite ease-in-out;
+        }
+
+        .typing-indicator span:nth-child(1) {
+            animation-delay: -0.32s;
+        }
+
+        .typing-indicator span:nth-child(2) {
+            animation-delay: -0.16s;
+        }
+
+        @keyframes bounce {
+            0%, 80%, 100% {
+                transform: scale(0);
+            }
+            40% {
+                transform: scale(1);
+            }
+        }
+
+        .input-area {
+            background: white;
+            padding: 16px 24px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .input-wrapper {
+            flex: 1;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            background: var(--light-bg);
+            padding: 12px 16px;
+            border-radius: 12px;
+        }
+
+        .input-wrapper input {
+            flex: 1;
+            border: none;
+            background: none;
+            outline: none;
+            font-size: 15px;
+        }
+
+        .send-btn {
+            width: 48px;
+            height: 48px;
+            border: none;
+            border-radius: 12px;
+            background: var(--primary);
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .send-btn:hover {
+            background: var(--primary-dark);
+            transform: scale(1.05);
+        }
+
+        .send-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .modal-header h2 {
+            font-size: 20px;
+            color: var(--text-dark);
+        }
+
+        .close-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: var(--light-bg);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.2s;
+        }
+
+        .close-btn:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border 0.2s;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 16px 20px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+            display: none;
+            align-items: center;
+            gap: 12px;
+            z-index: 2000;
+            animation: slideInRight 0.3s ease-out;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .notification.active {
+            display: flex;
+        }
+
+        .notification.success {
+            border-left: 4px solid var(--success);
+        }
+
+        .notification.error {
+            border-left: 4px solid var(--danger);
+        }
+
+        .notification.warning {
+            border-left: 4px solid var(--warning);
+        }
+
+        @media (max-width: 1200px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .chat-container {
+                grid-template-columns: 1fr;
+            }
+
+            .chat-list {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">🚌</div>
+                <div class="logo-text">
+                    <h1>ViagemExpress</h1>
+                    <p>Sistema de Atendimento IA</p>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card success">
+                    <div class="stat-label">Conversas Hoje</div>
+                    <div class="stat-value" id="totalChats">0</div>
+                    <div class="stat-change positive">+12% vs ontem</div>
+                </div>
+
+                <div class="stat-card warning">
+                    <div class="stat-label">Taxa Conversão</div>
+                    <div class="stat-value">68%</div>
+                    <div class="stat-change positive">+5% vs semana</div>
+                </div>
+
+                <div class="stat-card danger">
+                    <div class="stat-label">Tempo Médio</div>
+                    <div class="stat-value">2.3m</div>
+                    <div class="stat-change negative">-15% eficiência</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-label">Vendas Hoje</div>
+                    <div class="stat-value">R$ 4.2k</div>
+                    <div class="stat-change positive">+28% vs média</div>
+                </div>
+            </div>
+
+            <div class="quick-actions">
+                <button class="action-btn primary" onclick="openNewChat()">
+                    ➕ Nova Conversa
+                </button>
+                <button class="action-btn secondary" onclick="openExportModal()">
+                    📊 Exportar Relatório
+                </button>
+                <button class="action-btn secondary" onclick="openSettingsModal()">
+                    ⚙️ Configurações IA
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="top-bar">
+                <div class="search-bar">
+                    <span>🔍</span>
+                    <input type="text" placeholder="Buscar conversas, clientes...">
+                </div>
+                <div class="user-info">
+                    <div>
+                        <div style="text-align: right; font-size: 13px; font-weight: 600; color: var(--text-dark);">Operador</div>
+                        <div style="text-align: right; font-size: 11px; color: var(--text-muted);">Admin</div>
+                    </div>
+                    <div class="user-avatar">OP</div>
+                </div>
+            </div>
+
+            <div class="chat-container">
+                <!-- Chat List -->
+                <div class="chat-list">
+                    <div class="chat-list-header">
+                        <h3>Conversas Ativas</h3>
+                        <span style="background: var(--success); color: white; padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: 600;">3 online</span>
+                    </div>
+
+                    <div class="filter-tabs">
+                        <button class="filter-tab active">Todas</button>
+                        <button class="filter-tab">Ativas</button>
+                        <button class="filter-tab">Concluídas</button>
+                    </div>
+
+                    <div class="chats" id="chatListContainer">
+                        <div class="chat-item active" onclick="selectChat(this, 'Cliente Novo')">
+                            <div class="chat-item-avatar">🚌</div>
+                            <div class="chat-item-info">
+                                <div class="chat-item-header">
+                                    <span class="chat-item-name">Cliente Novo</span>
+                                    <span class="chat-item-time">Agora</span>
+                                </div>
+                                <div class="chat-item-preview">Olá! 👋 Bem-vindo à nossa central...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Area -->
+                <div class="chat-area">
+                    <div class="chat-header">
+                        <div class="chat-header-info">
+                            <div class="chat-header-avatar">🚌</div>
+                            <div class="chat-header-details">
+                                <h3 id="currentChatName">Cliente Novo</h3>
+                                <p id="currentChatStatus">Online - IA respondendo</p>
+                            </div>
+                        </div>
+                        <div class="chat-actions">
+                            <button class="icon-btn" title="Transferir para humano">👤</button>
+                            <button class="icon-btn" title="Histórico">📋</button>
+                            <button class="icon-btn" onclick="openExportModal()" title="Exportar">📧</button>
+                        </div>
+                    </div>
+
+                    <div class="messages" id="messagesContainer">
+                        <div class="message bot">
+                            <div class="message-content">
+                                Olá! 👋 Bem-vindo à <strong>ViagemExpress</strong>! Sou seu atendente virtual com inteligência artificial.
+                                <br><br>
+                                Estou aqui para ajudar você a encontrar a melhor passagem de ônibus. Como posso ajudar?
+                                <div class="message-time">Agora</div>
+                            </div>
+                        </div>
+                        <div class="typing-indicator" id="typingIndicator">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+
+                    <div class="input-area">
+                        <div class="input-wrapper">
+                            <span>😊</span>
+                            <input type="text" id="messageInput" placeholder="Digite sua mensagem..." onkeypress="handleKeyPress(event)">
+                            <span style="cursor: pointer;">📎</span>
+                        </div>
+                        <button class="send-btn" onclick="sendMessage()">➤</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Modal -->
+    <div class="modal" id="exportModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📊 Exportar Conversa</h2>
+                <button class="close-btn" onclick="closeModal('exportModal')">✕</button>
+            </div>
+            <div class="form-group">
+                <label>Formato de Exportação</label>
+                <select id="exportFormat">
+                    <option value="pdf">PDF - Relatório Completo</option>
+                    <option value="txt">TXT - Texto Simples</option>
+                    <option value="json">JSON - Dados Estruturados</option>
+                    <option value="csv">CSV - Planilha</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Email para Envio</label>
+                <input type="email" id="exportEmail" placeholder="seu@email.com">
+            </div>
+            <button class="action-btn primary" style="width: 100%;" onclick="exportChat()">
+                📧 Enviar por Email
+            </button>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>⚙️ Configurações da IA</h2>
+                <button class="close-btn" onclick="closeModal('settingsModal')">✕</button>
+            </div>
+            <div class="form-group">
+                <label>Nome da Empresa</label>
+                <input type="text" id="companyName" value="ViagemExpress">
+            </div>
+            <div class="form-group">
+                <label>Tom do Atendimento</label>
+                <select id="aiTone">
+                    <option value="friendly">Amigável e Casual</option>
+                    <option value="professional">Profissional</option>
+                    <option value="formal">Formal</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Instruções Personalizadas</label>
+                <textarea id="customInstructions" placeholder="Ex: Sempre oferecer desconto para idosos, priorizar vendas de executivo..."></textarea>
+            </div>
+            <button class="action-btn primary" style="width: 100%;" onclick="saveSettings()">
+                💾 Salvar Configurações
+            </button>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <span id="notificationIcon">✅</span>
+        <div>
+            <div style="font-weight: 600; font-size: 14px;" id="notificationTitle">Sucesso!</div>
+            <div style="font-size: 12px; color: var(--text-muted);" id="notificationMessage">Operação realizada</div>
+        </div>
+    </div>
+
+    <script>
+        const messagesContainer = document.getElementById('messagesContainer');
+        const messageInput = document.getElementById('messageInput');
+        const typingIndicator = document.getElementById('typingIndicator');
+        const currentChatStatus = document.getElementById('currentChatStatus');
+        const totalChatsElement = document.getElementById('totalChats');
+        
+        let conversationHistory = [];
+        let chatCount = 0;
+
+        const systemPrompt = `Você é um atendente virtual da ViagemExpress, uma empresa de ônibus moderna e eficiente. Seu objetivo é vender passagens de ônibus de forma consultiva e profissional.
+
+INFORMAÇÕES DA EMPRESA:
+- Rotas principais: São Paulo ↔ Rio de Janeiro, São Paulo ↔ Belo Horizonte, Rio ↔ Salvador, São Paulo ↔ Curitiba
+- Horários: Saídas regulares de 2 em 2 horas (6h às 22h)
+- Categorias:
+  * Convencional: R$85 (SP-RJ), conforto básico
+  * Executivo: R$105 (+R$20), poltronas reclináveis, WiFi, tomadas
+  * Leito: R$135 (+R$50), cama confortável, ar-condicionado individual, kit amenidades
+- Formas de pagamento: PIX (5% desconto), Cartão (até 3x sem juros), Boleto
+- Política de cancelamento: Até 24h antes (reembolso total), Entre 12-24h (50%), Menos de 12h (não reembolsável)
+
+ESTRATÉGIA DE VENDAS:
+1. Cumprimente de forma calorosa e profissional
+2. Identifique necessidades: origem, destino, data, quantidade de passageiros
+3. Apresente opções adequadas ao perfil (se mencionarem conforto, sugira executivo/leito)
+4. Destaque benefícios: "O executivo inclui WiFi e tomadas, perfeito para trabalhar durante a viagem"
+5. Crie urgência quando apropriado: "Temos apenas 3 poltronas executivas para esse horário"
+6. Ofereça upgrades: "Por apenas R$20 a mais, você viaja no executivo com muito mais conforto"
+7. Feche a venda coletando: Nome completo, CPF, Email, Telefone, Forma de pagamento
+8. Confirme com número de pedido fictício (use formato: VE-2025-XXXX)
+9. Envie resumo da compra e instruções
+
+ESTILO DE COMUNICAÇÃO:
+- Use emojis moderadamente (1-2 por mensagem)
+- Seja consultivo, não apenas processual
+- Faça perguntas abertas para entender melhor
+- Responda de forma concisa (máximo 5 linhas)
+- Demonstre entusiasmo genuíno
+- Use técnicas de vendas sutis
+
+EXEMPLO DE FLUXO IDEAL:
+Cliente: "Quero ir para o Rio"
+Você: "Ótimo! Rio de Janeiro é um destino incrível 🌴 Para eu encontrar as melhores opções para você, me conta: qual data você pretende viajar e prefere sair de manhã, tarde ou noite?"
+
+Seja um vendedor excelente, não apenas um processador de pedidos!`;
+
+        async function sendMessage() {
+            const message = messageInput.value.trim();
+            if (!message) return;
+
+            addMessage(message, 'user');
+            messageInput.value = '';
+            
+            await getBotResponse(message);
+        }
+
+        function addMessage(text, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            
+            const now = new Date();
+            const time = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+            
+            messageDiv.innerHTML = `
+                <div class="message-content">
+                    ${text}
+                    <div class="message-time">${time}</div>
+                </div>
+            `;
+            
+            messagesContainer.insertBefore(messageDiv, typingIndicator);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            // Update chat count
+            if (sender === 'user' && conversationHistory.length === 1) {
+                chatCount++;
+                totalChatsElement.textContent = chatCount;
+            }
+        }
+
+        async function getBotResponse(userMessage) {
+            typingIndicator.classList.add('active');
+            currentChatStatus.textContent = 'Digitando...';
+            
+            conversationHistory.push({
+                role: 'user',
+                content: userMessage
+            });
+
+            try {
+                const response = await fetch('https://api.anthropic.com/v1/messages', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        model: 'claude-sonnet-4-20250514',
+                        max_tokens: 1000,
+                        system: systemPrompt,
+                        messages: conversationHistory
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Erro na API');
+                }
+
+                const data = await response.json();
+                const botMessage = data.content[0].text;
+
+                conversationHistory.push({
+                    role: 'assistant',
+                    content: botMessage
+                });
+
+                await new Promise(resolve => setTimeout(resolve, 1200 + Math.random() * 800));
+
+                typingIndicator.classList.remove('active');
+                currentChatStatus.textContent = 'Online - IA respondendo';
+                addMessage(botMessage, 'bot');
+
+            } catch (error) {
+                console.error('Erro:', error);
+                typingIndicator.classList.remove('active');
+                currentChatStatus.textContent = 'Online';
+                addMessage('Desculpe, encontrei um problema técnico. Nossa equipe já foi notificada. Pode tentar novamente? 😅', 'bot');
+                showNotification('Erro de Conexão', 'Verifique sua internet', 'error');
+            }
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function openNewChat() {
+            if (confirm('Deseja iniciar uma nova conversa? A conversa atual será salva automaticamente.')) {
+                conversationHistory = [];
+                messagesContainer.innerHTML = `
+                    <div class="message bot">
+                        <div class="message-content">
+                            Olá! 👋 Bem-vindo à <strong>ViagemExpress</strong>! Sou seu atendente virtual com inteligência artificial.
+                            <br><br>
+                            Estou aqui para ajudar você a encontrar a melhor passagem de ônibus. Como posso ajudar?
+                            <div class="message-time">Agora</div>
+                        </div>
+                    </div>
+                    <div class="typing-indicator" id="typingIndicator">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                `;
+                showNotification('Nova Conversa', 'Conversa anterior salva com sucesso', 'success');
+            }
+        }
+
+        function openExportModal() {
+            document.getElementById('exportModal').classList.add('active');
+        }
+
+        function openSettingsModal() {
+            document.getElementById('settingsModal').classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function exportChat() {
+            const format = document.getElementById('exportFormat').value;
+            const email = document.getElementById('exportEmail').value;
+            
+            if (!email) {
+                showNotification('Atenção', 'Preencha o email', 'warning');
+                return;
+            }
+
+            // Simular exportação
+            showNotification('Exportação Iniciada', `Conversa será enviada para ${email} em formato ${format.toUpperCase()}`, 'success');
+            closeModal('exportModal');
+        }
+
+        function saveSettings() {
+            const companyName = document.getElementById('companyName').value;
+            showNotification('Configurações Salvas', `Empresa: ${companyName}`, 'success');
+            closeModal('settingsModal');
+        }
+
+        function showNotification(title, message, type = 'success') {
+            const notification = document.getElementById('notification');
+            const icon = document.getElementById('notificationIcon');
+            const titleEl = document.getElementById('notificationTitle');
+            const messageEl = document.getElementById('notificationMessage');
+
+            notification.className = `notification ${type}`;
+            
+            const icons = {
+                success: '✅',
+                error: '❌',
+                warning: '⚠️'
+            };
+            
+            icon.textContent = icons[type];
+            titleEl.textContent = title;
+            messageEl.textContent = message;
+            
+            notification.classList.add('active');
+            
+            setTimeout(() => {
+                notification.classList.remove('active');
+            }, 4000);
+        }
+
+        function selectChat(element, name) {
+            document.querySelectorAll('.chat-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            element.classList.add('active');
+            document.getElementById('currentChatName').textContent = name;
+        }
+
+        // Auto-scroll messages
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+        // Simulate real-time updates
+        setInterval(() => {
+            const stats = ['68%', '69%', '70%', '67%'];
+            const randomStat = stats[Math.floor(Math.random() * stats.length)];
+            document.querySelectorAll('.stat-value')[1].textContent = randomStat;
+        }, 10000);
+    </script>
+</body>
+</html>
