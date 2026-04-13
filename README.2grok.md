@@ -84,40 +84,6 @@ npm install
 cp .env.example .env
 ```
 
-Edite o arquivo `.env` com suas credenciais:
-
-```env
-# Servidor
-NODE\_ENV=production
-PORT=3000
-
-# PostgreSQL
-DATABASE\_URL=postgresql://viagemexpress\_user:sua\_senha\_segura@localhost:5432/viagemexpress
-DB\_HOST=localhost
-DB\_PORT=5432
-DB\_NAME=viagemexpress
-DB\_USER=viagemexpress\_user
-DB\_PASSWORD=sua\_senha\_segura
-
-# Redis (Cache e Sessões)
-REDIS\_URL=redis://localhost:6379
-REDIS\_HOST=localhost
-REDIS\_PORT=6379
-REDIS\_PASSWORD=
-REDIS\_ENABLED=true
-
-# Evolution API
-EVOLUTION\_API\_URL=http://localhost:8080
-EVOLUTION\_API\_KEY=sua-chave-evolution
-EVOLUTION\_INSTANCE\_NAME=viagemexpress
-
-# Claude AI
-ANTHROPIC\_API\_KEY=sk-ant-xxxxx
-
-# Segurança
-SESSION\_SECRET=gere\_uma\_chave\_aleatoria\_aqui
-JWT\_SECRET=outra\_chave\_aleatoria\_segura
-```
 
 ### 5\. Inicialize o banco de dados
 
